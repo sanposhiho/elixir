@@ -68,7 +68,7 @@ defmodule Tuple do
   Inserts an element into a tuple.
 
   Inserts `value` into `tuple` at the given `index`.
-  Raises an `ArgumentError` if `index` is negative or greater than the
+  Raises an `ArgumentError` if `index` is greater than the
   length of `tuple`. Index is zero-based.
 
   Inlined by the compiler.
@@ -82,9 +82,17 @@ defmodule Tuple do
       {:bar, :baz, :bong}
 
   """
-  @spec insert_at(tuple, non_neg_integer, term) :: tuple
+  @spec insert_at(tuple, integer, term) :: tuple
   def insert_at(tuple, index, value) do
-    :erlang.insert_element(index + 1, tuple, value)
+    non_neg_index =
+      if index >= 0 do
+        index
+      else
+        count = tuple_size(tuple)
+        index + count + 1
+      end
+
+    :erlang.insert_element(non_neg_index + 1, tuple, value)
   end
 
   @doc """
@@ -111,7 +119,7 @@ defmodule Tuple do
   Removes an element from a tuple.
 
   Deletes the element at the given `index` from `tuple`.
-  Raises an `ArgumentError` if `index` is negative or greater than
+  Raises an `ArgumentError` if `index` is greater than
   or equal to the length of `tuple`. Index is zero-based.
 
   Inlined by the compiler.
@@ -123,9 +131,17 @@ defmodule Tuple do
       {:bar, :baz}
 
   """
-  @spec delete_at(tuple, non_neg_integer) :: tuple
+  @spec delete_at(tuple, integer) :: tuple
   def delete_at(tuple, index) do
-    :erlang.delete_element(index + 1, tuple)
+    non_neg_index =
+      if index >= 0 do
+        index
+      else
+        count = tuple_size(tuple)
+        index + count
+      end
+
+    :erlang.delete_element(non_neg_index + 1, tuple)
   end
 
   @doc """

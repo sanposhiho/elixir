@@ -248,28 +248,16 @@ rewrite(Receiver, DotMeta, Right, Meta, Args) ->
 ?rewrite(?string, to_existing_atom, [Arg], erlang, binary_to_existing_atom, [Arg, utf8]);
 ?rewrite(?tuple, duplicate, [Data, Size], erlang, make_tuple, [Size, Data]);
 
-inner_rewrite(ex_to_erl, ?tuple, delete_at, [Tuple, Index]) ->
-  {erlang, delete_element, [increment(Index), Tuple]};
-inner_rewrite(ex_to_erl, ?tuple, insert_at, [Tuple, Index, Term]) ->
-  {erlang, insert_element, [increment(Index), Tuple, Term]};
 inner_rewrite(ex_to_erl, ?kernel, elem, [Tuple, Index]) ->
   {erlang, element, [increment(Index), Tuple]};
 inner_rewrite(ex_to_erl, ?kernel, put_elem, [Tuple, Index, Value]) ->
   {erlang, setelement, [increment(Index), Tuple, Value]};
 
-inner_rewrite(erl_to_ex, erlang, delete_element, [Index, Tuple]) when is_number(Index) ->
-  {?tuple, delete_at, [Tuple, Index - 1]};
-inner_rewrite(erl_to_ex, erlang, insert_element, [Index, Tuple, Term]) when is_number(Index) ->
-  {?tuple, insert_at, [Tuple, Index - 1, Term]};
 inner_rewrite(erl_to_ex, erlang, element, [Index, Tuple]) when is_number(Index) ->
   {?kernel, elem, [Tuple, Index - 1]};
 inner_rewrite(erl_to_ex, erlang, setelement, [Index, Tuple, Value]) when is_number(Index) ->
   {?kernel, put_elem, [Tuple, Index - 1, Value]};
 
-inner_rewrite(erl_to_ex, erlang, delete_element, [{{'.', _, [erlang, '+']}, _, [Index, 1]}, Tuple]) ->
-  {?tuple, delete_at, [Tuple, Index]};
-inner_rewrite(erl_to_ex, erlang, insert_element, [{{'.', _, [erlang, '+']}, _, [Index, 1]}, Tuple, Term]) ->
-  {?tuple, insert_at, [Tuple, Index, Term]};
 inner_rewrite(erl_to_ex, erlang, element, [{{'.', _, [erlang, '+']}, _, [Index, 1]}, Tuple]) ->
   {?kernel, elem, [Tuple, Index]};
 inner_rewrite(erl_to_ex, erlang, setelement, [{{'.', _, [erlang, '+']}, _, [Index, 1]}, Tuple, Value]) ->
