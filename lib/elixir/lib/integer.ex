@@ -83,7 +83,7 @@ defmodule Integer do
   """
   @doc since: "1.4.0"
   @spec mod(integer, neg_integer | pos_integer) :: integer
-  def mod(dividend, divisor) when is_integer(dividend) and is_integer(divisor) do
+  def mod(dividend, divisor) do
     remainder = rem(dividend, divisor)
 
     if remainder * divisor < 0 do
@@ -117,7 +117,7 @@ defmodule Integer do
   """
   @doc since: "1.4.0"
   @spec floor_div(integer, neg_integer | pos_integer) :: integer
-  def floor_div(dividend, divisor) when is_integer(dividend) and is_integer(divisor) do
+  def floor_div(dividend, divisor) do
     if dividend * divisor < 0 and rem(dividend, divisor) != 0 do
       div(dividend, divisor) - 1
     else
